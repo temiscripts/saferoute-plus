@@ -61,8 +61,10 @@ export const env = {
   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? '',
   osrmBaseUrl: process.env.OSRM_BASE_URL ?? 'https://router.project-osrm.org',
 
-  escalationAckWindowSeconds: int('ESCALATION_ACK_WINDOW_SECONDS', 60),
+  escalationAckWindowSeconds: int('ESCALATION_ACK_WINDOW_SECONDS', 30),
   deadmanCheckinIntervalSeconds: int('DEADMAN_CHECKIN_INTERVAL_SECONDS', 120),
+  deadmanTickIntervalSeconds: int('DEADMAN_TICK_INTERVAL_SECONDS', 10),
+  ackLinkBaseUrl: process.env.ACK_LINK_BASE_URL ?? 'http://localhost:5173/ack',
 
   corsOrigin: process.env.CORS_ORIGIN ?? '*',
 };

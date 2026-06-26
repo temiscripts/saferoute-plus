@@ -63,6 +63,31 @@ CREATE TABLE IF NOT EXISTS session_locations (
 );
 CREATE INDEX IF NOT EXISTS idx_session_locations_session ON session_locations(session_id);
 
+CREATE TABLE IF NOT EXISTS escalations (
+  id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
+  status TEXT NOT NULL CHECK (status IN ('active', 'acked', 'exhausted', 'cancelled')),
+  current_tier INTEGER NOT NULL DEFAULT 0,
+  trigger_reason TEXT NOT NULL CHECK (trigger_reason IN ('manual_sos', 'deadman')),
+  started_at INTEGER NOT NULL,
+  resolved_at INTEGER,
+  resolved_by_contact_id TEXT REFERENCES contacts(id) ON DELETE SET NULL
+);
+CREATE INDEX IF NOT EXISTS idx_escalations_session ON escalations(session_id);
+CREATE INDEX IF NOT EXISTS idx_escalations_status ON escalations(status);
+
+CREATE TABLE IF NOT EXISTS escalation_attempts (
+  id TEXT PRIMARY KEY,
+  escalation_id TEXT NOT NULL REFERENCES escalations(id) ON DELETE CASCADE,
+  contact_id TEXT NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,
+  tier INTEGER NOT NULL,
+  notified_at INTEGER NOT NULL,
+  acked_at INTEGER,
+  ack_token TEXT NOT NULL UNIQUE
+);
+CREATE INDEX IF NOT EXISTS idx_attempts_escalation ON escalation_attempts(escalation_id);
+CREATE INDEX IF NOT EXISTS idx_attempts_token ON escalation_attempts(ack_token);
+
 CREATE TABLE IF NOT EXISTS post_incident_checkins (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
