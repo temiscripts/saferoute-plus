@@ -1,0 +1,362 @@
+[
+  {
+    "id": "seed-r-001",
+    "lat": 6.5178,
+    "lng": 3.3953,
+    "category": "catcalling",
+    "description": "Group of men at the UNILAG main gate were shouting at every woman who walked past. Followed me for about 50 metres before I turned back toward campus.",
+    "days_ago": 2,
+    "hour": 18
+  },
+  {
+    "id": "seed-r-002",
+    "lat": 6.5181,
+    "lng": 3.3971,
+    "category": "harassment",
+    "description": "Man on a motorbike kept circling the road in front of Moremi hostel and making comments. Happened twice within 20 minutes. Security guard on duty did nothing.",
+    "days_ago": 5,
+    "hour": 21
+  },
+  {
+    "id": "seed-r-003",
+    "lat": 6.5068,
+    "lng": 3.3699,
+    "category": "harassment",
+    "description": "On a danfo from Yaba bus stop heading to CMS. The driver kept making comments to me and the other female passenger. Conductor did not intervene.",
+    "days_ago": 7,
+    "hour": 17
+  },
+  {
+    "id": "seed-r-004",
+    "lat": 6.5074,
+    "lng": 3.3685,
+    "category": "attempted_robbery",
+    "description": "Two men on a bike tried to grab my bag while I was waiting for a bus at the Yaba junction. I held on and screamed; they sped off. My phone was nearly taken.",
+    "days_ago": 11,
+    "hour": 20
+  },
+  {
+    "id": "seed-r-005",
+    "lat": 6.5541,
+    "lng": 3.3418,
+    "category": "unsafe_area",
+    "description": "The overhead bridge at Oshodi is completely unlit after 8pm. There are usually men loitering underneath and no security presence at all. I had to call someone to walk with me.",
+    "days_ago": 14,
+    "hour": 20
+  },
+  {
+    "id": "seed-r-006",
+    "lat": 6.5535,
+    "lng": 3.3425,
+    "category": "harassment",
+    "description": "Man grabbed my arm while I was trying to cross at Oshodi bus stop. Claimed it was a joke when I shouted. Passers-by did not help.",
+    "days_ago": 16,
+    "hour": 19
+  },
+  {
+    "id": "seed-r-007",
+    "lat": 6.4978,
+    "lng": 3.3519,
+    "category": "stalking",
+    "description": "Same man followed me from Ojuelegba all the way to my street in Surulere — at least 20 minutes on foot. I had to enter a pharmacy and wait until he left.",
+    "days_ago": 18,
+    "hour": 18
+  },
+  {
+    "id": "seed-r-008",
+    "lat": 6.5163,
+    "lng": 3.3462,
+    "category": "assault",
+    "description": "Man pushed me aside aggressively at Mushin motor park when I declined to give him my number. Shoved me into the crowd; I fell and cut my arm on a fence.",
+    "days_ago": 21,
+    "hour": 22
+  },
+  {
+    "id": "seed-r-009",
+    "lat": 6.4539,
+    "lng": 3.3912,
+    "category": "harassment",
+    "description": "Man at CMS bus stop kept touching my back and shoulders repeatedly. Even after I moved away twice he followed me to the next bus stop.",
+    "days_ago": 23,
+    "hour": 8
+  },
+  {
+    "id": "seed-r-010",
+    "lat": 6.4291,
+    "lng": 3.4247,
+    "category": "attempted_robbery",
+    "description": "Two guys on a bike snatched my phone at the ATM on Akin Adesola, Victoria Island. It was around 9pm and the street was quiet. Happened very fast.",
+    "days_ago": 25,
+    "hour": 21
+  },
+  {
+    "id": "seed-r-011",
+    "lat": 6.6001,
+    "lng": 3.3429,
+    "category": "catcalling",
+    "description": "A group of men outside Ikeja City Mall followed me to the car park making rude comments. Security guard was nearby but did not intervene when I made eye contact with him.",
+    "days_ago": 28,
+    "hour": 15
+  },
+  {
+    "id": "seed-r-012",
+    "lat": 6.5634,
+    "lng": 3.3668,
+    "category": "harassment",
+    "description": "Man at the Maryland bus stop grabbed my hand claiming to be selling airtime. Refused to let go for nearly a minute. Very aggressive when I pulled away.",
+    "days_ago": 31,
+    "hour": 18
+  },
+  {
+    "id": "seed-r-013",
+    "lat": 6.5572,
+    "lng": 3.3795,
+    "category": "unsafe_area",
+    "description": "The street leading into Gbagada estate phase 2 has no street lights and the bush on the right side is overgrown. Felt very exposed walking home at night.",
+    "days_ago": 34,
+    "hour": 22
+  },
+  {
+    "id": "seed-r-014",
+    "lat": 6.4528,
+    "lng": 3.3985,
+    "category": "stalking",
+    "description": "Man from the Obalende market followed me through three connecting streets. When I stopped to call someone he stopped too and pretended to check his phone. Left only when I entered a busy shop.",
+    "days_ago": 37,
+    "hour": 19
+  },
+  {
+    "id": "seed-r-015",
+    "lat": 6.4689,
+    "lng": 3.2790,
+    "category": "unsafe_area",
+    "description": "The pathway along the canal in Festac near 6th Avenue is completely dark and isolated at night. No street lights, no foot traffic. I was essentially alone for a 5-minute walk.",
+    "days_ago": 40,
+    "hour": 23
+  },
+  {
+    "id": "seed-r-016",
+    "lat": 6.5174,
+    "lng": 3.3960,
+    "category": "catcalling",
+    "description": "Happened right at the UNILAG main gate again — three different men calling out from across the road as I waited for an Uber. This is a daily occurrence here.",
+    "days_ago": 43,
+    "hour": 17
+  },
+  {
+    "id": "seed-r-017",
+    "lat": 6.5065,
+    "lng": 3.3701,
+    "category": "harassment",
+    "description": "Was at the Yaba roundabout and a man started screaming abuse at me because I ignored him. Several people watched but nobody said anything.",
+    "days_ago": 47,
+    "hour": 19
+  },
+  {
+    "id": "seed-r-018",
+    "lat": 6.5544,
+    "lng": 3.3412,
+    "category": "unsafe_area",
+    "description": "The entrance to Oshodi market from the bridge has a cluster of men who harass every woman who passes. The area smells of alcohol and feels threatening even in daylight.",
+    "days_ago": 50,
+    "hour": 16
+  },
+  {
+    "id": "seed-r-019",
+    "lat": 6.4971,
+    "lng": 3.3527,
+    "category": "catcalling",
+    "description": "Men outside a mechanics workshop on Adeniran Ogunsanya called out comments and started following me on foot. I entered a pharmacy to lose them.",
+    "days_ago": 53,
+    "hour": 14
+  },
+  {
+    "id": "seed-r-020",
+    "lat": 6.4532,
+    "lng": 3.3921,
+    "category": "sexual_assault",
+    "description": "Man grabbed me from behind at the CMS ferry terminal at night. I screamed and ran. I reported it to a nearby officer who told me to 'be careful next time.'",
+    "days_ago": 57,
+    "hour": 22
+  },
+  {
+    "id": "seed-r-021",
+    "lat": 6.4482,
+    "lng": 3.5172,
+    "category": "attempted_robbery",
+    "description": "Bike snatch at Admiralty Way, Lekki Phase 1. They got my laptop bag. Happened just after I left a restaurant around 10pm — area looked quiet and safe.",
+    "days_ago": 61,
+    "hour": 22
+  },
+  {
+    "id": "seed-r-022",
+    "lat": 6.5182,
+    "lng": 3.3948,
+    "category": "harassment",
+    "description": "Security guard at the UNILAG front car park made repeated inappropriate comments and blocked my path asking for my phone number. I had to go around him.",
+    "days_ago": 64,
+    "hour": 18
+  },
+  {
+    "id": "seed-r-023",
+    "lat": 6.5079,
+    "lng": 3.3688,
+    "category": "catcalling",
+    "description": "Group of traders at Yaba market blocked the walkway and refused to move unless I spoke to them. Had to push through; one of them touched my arm as I passed.",
+    "days_ago": 68,
+    "hour": 10
+  },
+  {
+    "id": "seed-r-024",
+    "lat": 6.5536,
+    "lng": 3.3429,
+    "category": "assault",
+    "description": "Man punched my shoulder at Oshodi bus stop after I refused to give him money. Nobody reacted. I was too shocked to respond.",
+    "days_ago": 71,
+    "hour": 23
+  },
+  {
+    "id": "seed-r-025",
+    "lat": 6.5954,
+    "lng": 3.3418,
+    "category": "harassment",
+    "description": "Man at the Ikeja bus terminus kept bumping into me deliberately in the crowd then insisting I was lying when I told him to stop. Very intimidating.",
+    "days_ago": 75,
+    "hour": 13
+  },
+  {
+    "id": "seed-r-026",
+    "lat": 6.6099,
+    "lng": 3.2641,
+    "category": "unsafe_area",
+    "description": "The road from Alimosho junction to Command estate has no working street lights for about 1.5km. I've been catcalled three times on this stretch in the last month alone.",
+    "days_ago": 79,
+    "hour": 21
+  },
+  {
+    "id": "seed-r-027",
+    "lat": 6.6208,
+    "lng": 3.3182,
+    "category": "stalking",
+    "description": "Man on a motorcycle followed me slowly from Agege market to my gate — about 1.2km. When I stopped and stared he drove off, then reappeared behind me two minutes later.",
+    "days_ago": 83,
+    "hour": 20
+  },
+  {
+    "id": "seed-r-028",
+    "lat": 6.5170,
+    "lng": 3.3455,
+    "category": "catcalling",
+    "description": "A bus conductor in Mushin leaned out the window and shouted explicit comments as I walked past. His driver slowed the bus down so it stayed beside me for almost a minute.",
+    "days_ago": 87,
+    "hour": 18
+  },
+  {
+    "id": "seed-r-029",
+    "lat": 6.5059,
+    "lng": 3.3579,
+    "category": "harassment",
+    "description": "Two men at the Ojuelegba bridge blocked both sides of the pedestrian path and demanded I pay to pass. When I shouted they let me through but followed me down the stairs.",
+    "days_ago": 91,
+    "hour": 20
+  },
+  {
+    "id": "seed-r-030",
+    "lat": 6.5578,
+    "lng": 3.3788,
+    "category": "catcalling",
+    "description": "Men gathered near the bus stop in Gbagada made comments at every woman walking past. One followed me to the next junction. This happens every time I use this route after 4pm.",
+    "days_ago": 96,
+    "hour": 16
+  },
+  {
+    "id": "seed-r-031",
+    "lat": 6.4287,
+    "lng": 3.4259,
+    "category": "harassment",
+    "description": "Man in a parked car on Sanusi Fafunwa, VI, rolled down his window and kept trying to get my attention as I walked to a restaurant. Followed my pace in the car for a full block.",
+    "days_ago": 100,
+    "hour": 20
+  },
+  {
+    "id": "seed-r-032",
+    "lat": 6.5176,
+    "lng": 3.3958,
+    "category": "harassment",
+    "description": "Vendor outside UNILAG gate grabbed my shopping bag to 'help' me and refused to let go until I gave him money. Security was standing right there.",
+    "days_ago": 105,
+    "hour": 9
+  },
+  {
+    "id": "seed-r-033",
+    "lat": 6.5071,
+    "lng": 3.3692,
+    "category": "unsafe_area",
+    "description": "The pedestrian path behind the Yaba bus stop is blocked by overgrown bushes on one side and a broken fence on the other. No lighting at all. I had to use the road instead.",
+    "days_ago": 110,
+    "hour": 19
+  },
+  {
+    "id": "seed-r-034",
+    "lat": 6.4542,
+    "lng": 3.3908,
+    "category": "harassment",
+    "description": "Man shouted that I was 'too proud' and threw a paper cup at me at CMS when I didn't respond to him. Several people watched and laughed.",
+    "days_ago": 116,
+    "hour": 18
+  },
+  {
+    "id": "seed-r-035",
+    "lat": 6.4480,
+    "lng": 3.5166,
+    "category": "sexual_assault",
+    "description": "Man groped me in the crowd at the Lekki toll gate protest memorial area. I turned around immediately but couldn't identify him in the crowd. Very disturbing.",
+    "days_ago": 122,
+    "hour": 21
+  },
+  {
+    "id": "seed-r-036",
+    "lat": 6.5175,
+    "lng": 3.3950,
+    "category": "unsafe_area",
+    "description": "The back road alongside UNILAG by the lagoon side has no security after 7pm. Streetlights haven't worked in months. Multiple incidents have been reported here.",
+    "days_ago": 128,
+    "hour": 23
+  },
+  {
+    "id": "seed-r-037",
+    "lat": 6.5064,
+    "lng": 3.3704,
+    "category": "stalking",
+    "description": "Man got off the same bus as me at Yaba and followed me for three streets. When I turned and confronted him he pretended he was going the same direction.",
+    "days_ago": 134,
+    "hour": 19
+  },
+  {
+    "id": "seed-r-038",
+    "lat": 6.5540,
+    "lng": 3.3420,
+    "category": "unsafe_area",
+    "description": "Power cut at Oshodi meant the whole bus terminal area was pitch dark. Men were using the darkness to grab at women. I waited inside a shop for 45 minutes until my brother came.",
+    "days_ago": 141,
+    "hour": 22
+  },
+  {
+    "id": "seed-r-039",
+    "lat": 6.4975,
+    "lng": 3.3524,
+    "category": "harassment",
+    "description": "Landlord tried to enter my apartment unannounced after dark. When I refused and locked the door he pounded on it for several minutes. I have documentation of this.",
+    "days_ago": 148,
+    "hour": 23
+  },
+  {
+    "id": "seed-r-040",
+    "lat": 6.5060,
+    "lng": 3.3577,
+    "category": "other",
+    "description": "Group of men tried to push me into a parked minibus near Ojuelegba claiming to be 'helping' me catch my bus. I ran onto the main road. This felt like an attempted abduction.",
+    "days_ago": 156,
+    "hour": 22
+  }
+]
