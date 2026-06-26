@@ -1,6 +1,4 @@
-import { Router } from 'express';
-
-export function createEscalationRouter({ engine, db }) {
+export function createEscalationRouter({ engine, db, Router }) {
   const router = Router();
 
   const sessionState = db.prepare(`

@@ -23,6 +23,7 @@ app.get('/health', (_req, res) => res.json({ ok: true, env: env.nodeEnv }));
 const { engine, router: escalationRouter } = startEscalationEngine({
   db,
   sendSms,
+  Router: express.Router,
   config: {
     ackWindowSeconds: env.escalationAckWindowSeconds,
     deadmanCheckinIntervalSeconds: env.deadmanCheckinIntervalSeconds,
