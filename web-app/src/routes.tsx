@@ -1,28 +1,32 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import OnboardingPage from './pages/OnboardingPage';
+import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
+import OnboardingPage from './pages/OnboardingPage';
+import HomePage from './pages/HomePage';
 
 function Stub({ title }: { title: string }) {
   return (
-    <main style={{ padding: 'var(--space-8)' }}>
+    <section>
       <h1>{title}</h1>
       <p className="muted">Coming up next.</p>
-    </main>
+    </section>
   );
 }
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
-      <Route path="/home" element={<RequireAuth><Stub title="Home" /></RequireAuth>} />
-      <Route path="/session/active" element={<RequireAuth><Stub title="Active Session" /></RequireAuth>} />
-      <Route path="/post-incident" element={<RequireAuth><Stub title="Post-Incident Check-in" /></RequireAuth>} />
-      <Route path="/report" element={<Stub title="Anonymous Report" />} />
-      <Route path="/patterns" element={<Stub title="Pattern Details" />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
+        <Route path="/session/active" element={<RequireAuth><Stub title="Active Session" /></RequireAuth>} />
+        <Route path="/post-incident" element={<RequireAuth><Stub title="Post-Incident Check-in" /></RequireAuth>} />
+        <Route path="/report" element={<Stub title="Anonymous Report" />} />
+        <Route path="/patterns" element={<Stub title="Pattern Details" />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Route>
       <Route path="/ack/:token" element={<Stub title="Acknowledge" />} />
-      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }
