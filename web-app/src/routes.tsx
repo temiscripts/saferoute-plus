@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
 import OnboardingPage from './pages/OnboardingPage';
 import HomePage from './pages/HomePage';
+import ActiveSessionPage from './pages/ActiveSessionPage';
 
 function Stub({ title }: { title: string }) {
   return (
@@ -20,7 +21,7 @@ export default function AppRoutes() {
       <Route element={<Layout />}>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
-        <Route path="/session/active" element={<RequireAuth><Stub title="Active Session" /></RequireAuth>} />
+        <Route path="/session/active" element={<RequireAuth><ActiveSessionPage /></RequireAuth>} />
         <Route path="/post-incident" element={<RequireAuth><Stub title="Post-Incident Check-in" /></RequireAuth>} />
         <Route path="/report" element={<Stub title="Anonymous Report" />} />
         <Route path="/patterns" element={<Stub title="Pattern Details" />} />
