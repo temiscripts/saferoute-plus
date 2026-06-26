@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { db } from '../db/sqlite.js';
 import { newId, nowSeconds } from '../utils/ids.js';
 import { HttpError } from '../middleware/errorHandler.js';
+import { triggerSos, cancelEscalationForSession } from '../services/escalationGateway.js';
 
 export const startSessionSchema = z.object({
   destinationLat: z.coerce.number().gte(-90).lte(90).optional(),
@@ -25,7 +26,6 @@ const insertSession = db.prepare(`
 const findSession = db.prepare('SELECT * FROM sessions WHERE id = ? AND user_id = ?');
 const updateCheckin = db.prepare('UPDATE sessions SET last_checkin_at = ? WHERE id = ?');
 const endSessionStmt = db.prepare("UPDATE sessions SET status = 'ended', ended_at = ? WHERE id = ?");
-const triggerSosStmt = db.prepare("UPDATE sessions SET status = 'sos', sos_triggered_at = ? WHERE id = ?");
 const insertLocation = db.prepare(
   'INSERT INTO session_locations (id, session_id, lat, lng, recorded_at) VALUES (?, ?, ?, ?, ?)',
 );
@@ -64,18 +64,18 @@ export function postCheckin(req, res, next) {
   }
 }
 
-export function postSos(req, res, next) {
+export async function postSos(req, res, next) {
   try {
     const session = findSession.get(req.params.id, req.user.id);
     if (!session) throw new HttpError(404, 'not_found', 'Session not found');
     if (session.status === 'ended') throw new HttpError(409, 'ended', 'Session already ended');
 
     const now = nowSeconds();
-    triggerSosStmt.run(now, session.id);
     if (req.body.lat !== undefined && req.body.lng !== undefined) {
       insertLocation.run(newId(), session.id, req.body.lat, req.body.lng, now);
     }
-    res.json({ ok: true, status: 'sos', sosTriggeredAt: now });
+    const escalation = await triggerSos(session.id, 'manual_sos');
+    res.json({ ok: true, status: 'sos', sosTriggeredAt: now, escalation });
   } catch (err) {
     next(err);
   }
@@ -86,6 +86,7 @@ export function postEnd(req, res, next) {
     const session = findSession.get(req.params.id, req.user.id);
     if (!session) throw new HttpError(404, 'not_found', 'Session not found');
     endSessionStmt.run(nowSeconds(), session.id);
+    cancelEscalationForSession(session.id);
     res.json({ ok: true });
   } catch (err) {
     next(err);
