@@ -1,0 +1,207 @@
+.patterns-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 860px;
+}
+
+.patterns-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.patterns-header h1 { margin: 0; }
+
+.back-link {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+}
+.back-link:hover { color: var(--color-primary); }
+
+.patterns-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--space-4);
+}
+
+.patterns-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.patterns-card h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.insights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.insight-item {
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--color-safe) 8%, var(--color-surface));
+  border-left: 3px solid var(--color-safe);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: var(--fs-sm);
+}
+
+.stat-row {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.delta {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  margin-top: var(--space-1);
+}
+
+.delta-up {
+  background: color-mix(in srgb, var(--terracotta) 14%, transparent);
+  color: var(--terracotta);
+}
+
+.delta-down {
+  background: color-mix(in srgb, var(--teal) 14%, transparent);
+  color: var(--teal);
+}
+
+.delta-neutral {
+  background: color-mix(in srgb, var(--warm-gray) 14%, transparent);
+  color: var(--warm-gray);
+}
+
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 32px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.bar-label {
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+}
+
+.bar-track {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+  height: 10px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width var(--motion-base) var(--easing);
+}
+
+.bar-count {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.bar-morning  { background: color-mix(in srgb, var(--teal) 50%, white); }
+.bar-afternoon { background: var(--teal); }
+.bar-evening  { background: color-mix(in srgb, var(--terracotta) 70%, var(--teal)); }
+.bar-night    { background: var(--navy); }
+.bar-category { background: var(--teal); }
+
+.trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  height: 140px;
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+}
+
+.trend-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 44px;
+  gap: var(--space-1);
+  height: 100%;
+}
+
+.trend-bar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.trend-bar-fill {
+  width: 100%;
+  background: var(--teal);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  min-height: 3px;
+  transition: height var(--motion-base) var(--easing);
+}
+
+.trend-label {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+.trend-count {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+.patterns-empty {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  padding: var(--space-4) 0;
+}
+
+@media (max-width: 600px) {
+  .patterns-grid { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: 130px 1fr 28px; }
+}

@@ -6,15 +6,8 @@ import HomePage from './pages/HomePage';
 import ActiveSessionPage from './pages/ActiveSessionPage';
 import PostIncidentPage from './pages/PostIncidentPage';
 import ReportPage from './pages/ReportPage';
-
-function Stub({ title }: { title: string }) {
-  return (
-    <section>
-      <h1>{title}</h1>
-      <p className="muted">Coming up next.</p>
-    </section>
-  );
-}
+import PatternDetailsPage from './pages/PatternDetailsPage';
+import AckPage from './pages/AckPage';
 
 export default function AppRoutes() {
   return (
@@ -26,10 +19,10 @@ export default function AppRoutes() {
         <Route path="/session/active" element={<RequireAuth><ActiveSessionPage /></RequireAuth>} />
         <Route path="/post-incident" element={<RequireAuth><PostIncidentPage /></RequireAuth>} />
         <Route path="/report" element={<ReportPage />} />
-        <Route path="/patterns" element={<Stub title="Pattern Details" />} />
+        <Route path="/patterns" element={<PatternDetailsPage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
-      <Route path="/ack/:token" element={<Stub title="Acknowledge" />} />
+      <Route path="/ack/:token" element={<AckPage />} />
     </Routes>
   );
 }

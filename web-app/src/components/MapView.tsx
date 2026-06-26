@@ -24,10 +24,12 @@ function Recenter({ center }: { center: [number, number] }) {
 
 export default function MapView({
   reports,
+  clusters,
   center = DEFAULT_CENTER,
   height = 360,
 }: {
   reports: Report[];
+  clusters?: { lat: number; lng: number; count: number }[];
   center?: [number, number];
   height?: number | string;
 }) {
@@ -39,6 +41,23 @@ export default function MapView({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Recenter center={center} />
+        {clusters?.map((c, i) => (
+          <CircleMarker
+            key={`cluster-${i}`}
+            center={[c.lat, c.lng]}
+            radius={Math.max(10, Math.min(30, c.count * 6))}
+            pathOptions={{
+              color: colors.navy,
+              fillColor: colors.navy,
+              fillOpacity: 0.18,
+              weight: 2,
+            }}
+          >
+            <Popup>
+              <strong>{c.count} reports</strong> near this location
+            </Popup>
+          </CircleMarker>
+        ))}
         {reports.map((r) => (
           <CircleMarker
             key={r.id}
