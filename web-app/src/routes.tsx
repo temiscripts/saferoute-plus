@@ -5,6 +5,7 @@ import OnboardingPage from './pages/OnboardingPage';
 import HomePage from './pages/HomePage';
 import ActiveSessionPage from './pages/ActiveSessionPage';
 import PostIncidentPage from './pages/PostIncidentPage';
+import ReportPage from './pages/ReportPage';
 
 function Stub({ title }: { title: string }) {
   return (
@@ -24,7 +25,7 @@ export default function AppRoutes() {
         <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
         <Route path="/session/active" element={<RequireAuth><ActiveSessionPage /></RequireAuth>} />
         <Route path="/post-incident" element={<RequireAuth><PostIncidentPage /></RequireAuth>} />
-        <Route path="/report" element={<Stub title="Anonymous Report" />} />
+        <Route path="/report" element={<ReportPage />} />
         <Route path="/patterns" element={<Stub title="Pattern Details" />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
