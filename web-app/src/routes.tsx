@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import OnboardingPage from './pages/OnboardingPage';
+import RequireAuth from './components/RequireAuth';
 
 function Stub({ title }: { title: string }) {
   return (
@@ -12,15 +14,15 @@ function Stub({ title }: { title: string }) {
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Stub title="SafeRoute+" />} />
-      <Route path="/onboarding" element={<Stub title="Onboarding" />} />
-      <Route path="/home" element={<Stub title="Home" />} />
-      <Route path="/session/active" element={<Stub title="Active Session" />} />
-      <Route path="/post-incident" element={<Stub title="Post-Incident Check-in" />} />
+      <Route path="/" element={<Navigate to="/home" replace />} />
+      <Route path="/onboarding" element={<OnboardingPage />} />
+      <Route path="/home" element={<RequireAuth><Stub title="Home" /></RequireAuth>} />
+      <Route path="/session/active" element={<RequireAuth><Stub title="Active Session" /></RequireAuth>} />
+      <Route path="/post-incident" element={<RequireAuth><Stub title="Post-Incident Check-in" /></RequireAuth>} />
       <Route path="/report" element={<Stub title="Anonymous Report" />} />
       <Route path="/patterns" element={<Stub title="Pattern Details" />} />
       <Route path="/ack/:token" element={<Stub title="Acknowledge" />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }
