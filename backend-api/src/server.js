@@ -9,6 +9,7 @@ import { reportsRouter } from './routes/reports.js';
 import { sessionsRouter } from './routes/sessions.js';
 import { routesRouter } from './routes/routes.js';
 import { checkinsRouter } from './routes/checkins.js';
+import { patternsRouter } from './routes/patterns.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { startEscalationEngine } from '../../escalation-engine/src/index.js';
 import { setEscalationEngine } from './services/escalationGateway.js';
@@ -39,6 +40,7 @@ app.use('/reports', reportsRouter);
 app.use('/sessions', sessionsRouter);
 app.use('/routes', routesRouter);
 app.use('/checkins', checkinsRouter);
+app.use('/patterns', patternsRouter);
 app.use('/escalation', escalationRouter);
 
 app.use(notFound);
