@@ -5,46 +5,104 @@ import { useGeolocation } from '../hooks/useGeolocation';
 import './ReportPage.css';
 
 const CATEGORIES = [
-  { value: 'harassment', label: 'Harassment' },
-  { value: 'catcalling', label: 'Catcalling' },
-  { value: 'stalking', label: 'Stalking' },
+  { value: 'harassment',        label: 'Harassment' },
+  { value: 'catcalling',        label: 'Catcalling' },
+  { value: 'stalking',          label: 'Stalking' },
   { value: 'attempted_robbery', label: 'Attempted robbery' },
-  { value: 'assault', label: 'Physical assault' },
-  { value: 'sexual_assault', label: 'Sexual assault' },
-  { value: 'unsafe_area', label: 'Unsafe area / lighting' },
-  { value: 'other', label: 'Other' },
+  { value: 'assault',           label: 'Physical assault' },
+  { value: 'sexual_assault',    label: 'Sexual assault' },
+  { value: 'unsafe_area',       label: 'Unsafe area / poor lighting' },
+  { value: 'other',             label: 'Other' },
 ];
+
+const LGAS = [
+  'Alimosho', 'Ajeromi-Ifelodun', 'Kosofe', 'Mushin', 'Oshodi-Isolo',
+  'Ojo', 'Ikorodu', 'Surulere', 'Agege', 'Ifako-Ijaiye',
+  'Shomolu', 'Abeokuta', 'Lagos Island', 'Lagos Mainland', 'Ikeja',
+  'Eti-Osa', 'Badagry', 'Ibeju-Lekki', 'Epe', 'Apapa', 'Yaba',
+];
+
+// Reverse geocode lat/lng → readable place name via Nominatim (free, no key)
+async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+      { headers: { 'Accept-Language': 'en' } },
+    );
+    const data = await res.json();
+    const a = data.address ?? {};
+    return (
+      a.neighbourhood || a.suburb || a.city_district ||
+      a.town || a.village || a.county || 'Lagos'
+    );
+  } catch {
+    return 'Lagos';
+  }
+}
+
+// Forward geocode a text address → lat/lng via Nominatim
+async function geocodeAddress(text: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const q = encodeURIComponent(`${text}, Lagos, Nigeria`);
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`,
+      { headers: { 'Accept-Language': 'en' } },
+    );
+    const data = await res.json();
+    if (data[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+  } catch {}
+  return null;
+}
 
 export default function ReportPage() {
   const navigate = useNavigate();
-  const { coords, error: geoError } = useGeolocation(true);
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('harassment');
-  const [severity, setSeverity] = useState<'critical' | 'high' | 'moderate'>('moderate');
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+  const { coords } = useGeolocation(true);
 
-  function useMyLocation() {
+  const [location,    setLocation]    = useState('');
+  const [lga,         setLga]         = useState('');
+  const [description, setDescription] = useState('');
+  const [category,    setCategory]    = useState('harassment');
+  const [severity,    setSeverity]    = useState<'critical' | 'high' | 'moderate'>('moderate');
+  const [gpsCoords,   setGpsCoords]   = useState<{ lat: number; lng: number } | null>(null);
+  const [locating,    setLocating]    = useState(false);
+  const [submitting,  setSubmitting]  = useState(false);
+  const [error,       setError]       = useState<string | null>(null);
+  const [done,        setDone]        = useState(false);
+
+  async function useMyLocation() {
     if (!coords) return;
-    setLat(coords.lat.toFixed(6));
-    setLng(coords.lng.toFixed(6));
+    setLocating(true);
+    setGpsCoords({ lat: coords.lat, lng: coords.lng });
+    const name = await reverseGeocode(coords.lat, coords.lng);
+    setLocation(name);
+    setLocating(false);
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
+
     try {
-      await submitReport({
-        lat: Number(lat),
-        lng: Number(lng),
-        description,
-        category,
-        severity,
-      });
+      let lat: number, lng: number;
+
+      if (gpsCoords) {
+        lat = gpsCoords.lat;
+        lng = gpsCoords.lng;
+      } else {
+        const searchText = [location, lga].filter(Boolean).join(', ');
+        const geo = await geocodeAddress(searchText);
+        if (geo) {
+          lat = geo.lat;
+          lng = geo.lng;
+        } else {
+          // Fall back to Lagos centre
+          lat = 6.5244;
+          lng = 3.3792;
+        }
+      }
+
+      await submitReport({ lat, lng, description, category, severity });
       setDone(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not submit report');
@@ -58,12 +116,12 @@ export default function ReportPage() {
       <section className="report-done surface">
         <h1>Thank you.</h1>
         <p>
-          Your report was submitted anonymously. It's now part of the community safety map and will help
-          others avoid the same situation.
+          Your report was submitted anonymously. It's now part of the community
+          safety map and will help others avoid the same situation.
         </p>
         <div className="report-actions">
           <button className="btn btn-primary" onClick={() => navigate('/home')}>Back to home</button>
-          <button className="btn btn-secondary" onClick={() => { setDone(false); setDescription(''); }}>
+          <button className="btn btn-secondary" onClick={() => { setDone(false); setDescription(''); setLocation(''); setGpsCoords(null); }}>
             Submit another
           </button>
         </div>
@@ -73,35 +131,32 @@ export default function ReportPage() {
 
   return (
     <section className="report-page">
-      <h1>Report what happened</h1>
+      <h1>Report an incident</h1>
       <p className="muted">
-        Your report is anonymous. We don't ask for your name, phone, or any account. The location and
-        description are added to the community safety map.
+        Your report is anonymous. We don't ask for your name, phone, or any account.
+        The location and description are added to the community safety map.
       </p>
 
       <form onSubmit={onSubmit} className="report-form">
+
+        {/* Location */}
         <div className="report-grid">
           <label className="field">
-            <span className="field-label">Latitude</span>
+            <span className="field-label">Area / street</span>
             <input
               className="input"
-              type="number"
-              step="any"
-              value={lat}
-              onChange={(e) => setLat(e.target.value)}
-              required
+              type="text"
+              placeholder="e.g. Allen Avenue, Ikeja"
+              value={location}
+              onChange={(e) => { setLocation(e.target.value); setGpsCoords(null); }}
             />
           </label>
           <label className="field">
-            <span className="field-label">Longitude</span>
-            <input
-              className="input"
-              type="number"
-              step="any"
-              value={lng}
-              onChange={(e) => setLng(e.target.value)}
-              required
-            />
+            <span className="field-label">LGA</span>
+            <select className="input" value={lga} onChange={(e) => setLga(e.target.value)}>
+              <option value="">Select LGA (optional)</option>
+              {LGAS.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
           </label>
         </div>
 
@@ -109,34 +164,35 @@ export default function ReportPage() {
           type="button"
           className="btn btn-secondary use-loc"
           onClick={useMyLocation}
-          disabled={!coords}
+          disabled={!coords || locating}
         >
-          {coords ? 'Use my current location' : 'Waiting for location…'}
+          {locating ? 'Getting location…' : coords ? '📍 Use my current location' : 'Waiting for GPS…'}
         </button>
-        {geoError && <p className="error">Location: {geoError}</p>}
 
-        <label className="field">
-          <span className="field-label">Category</span>
-          <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
-            {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>{c.label}</option>
-            ))}
-          </select>
-        </label>
-
-        <div className="field">
-          <span className="field-label">Severity level</span>
-          <div className="sev-chips">
-            {(['critical', 'high', 'moderate'] as const).map((s) => (
-              <button
-                key={s}
-                type="button"
-                className={`sev-chip sev-${s}${severity === s ? ' sev-selected' : ''}`}
-                onClick={() => setSeverity(s)}
-              >
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </button>
-            ))}
+        {/* Category + severity */}
+        <div className="report-grid">
+          <label className="field">
+            <span className="field-label">Incident type</span>
+            <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </label>
+          <div className="field">
+            <span className="field-label">Severity level</span>
+            <div className="sev-chips">
+              {(['critical', 'high', 'moderate'] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  className={`sev-chip sev-${s}${severity === s ? ' sev-selected' : ''}`}
+                  onClick={() => setSeverity(s)}
+                >
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
