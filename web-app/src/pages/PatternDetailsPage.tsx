@@ -1,176 +1,240 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { getPatterns, type Patterns } from '../api/patterns';
 import MapView from '../components/MapView';
-import AlertStrip from '../components/AlertStrip';
 import './PatternDetailsPage.css';
 
-const BUCKET_LABELS: Record<string, string> = {
-  morning: 'Morning (5am–12pm)',
-  afternoon: 'Afternoon (12–5pm)',
-  evening: 'Evening (5–9pm)',
-  night: 'Night (9pm–5am)',
-};
+type Tab = 'time' | 'location' | 'types' | 'monthly';
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'time',     label: 'Time patterns' },
+  { id: 'location', label: 'Location clusters' },
+  { id: 'types',    label: 'Incident types' },
+  { id: 'monthly',  label: 'Monthly trends' },
+];
 
 const CATEGORY_LABELS: Record<string, string> = {
-  harassment: 'Harassment',
-  catcalling: 'Catcalling',
-  stalking: 'Stalking',
+  harassment:        'Harassment',
+  catcalling:        'Catcalling',
+  stalking:          'Stalking',
   attempted_robbery: 'Attempted robbery',
-  assault: 'Physical assault',
-  sexual_assault: 'Sexual assault',
-  unsafe_area: 'Unsafe area / lighting',
-  other: 'Other',
-  uncategorized: 'Uncategorized',
+  assault:           'Physical assault',
+  sexual_assault:    'Sexual assault',
+  unsafe_area:       'Unsafe area / lighting',
+  other:             'Other',
+  uncategorized:     'Uncategorized',
 };
 
-function DeltaBadge({ value }: { value: number }) {
-  if (value === 0) return <span className="delta delta-neutral">No change</span>;
+function insightBadge(text: string): { label: string; cls: string } {
+  const t = text.toLowerCase();
+  if (t.includes('hotspot') || t.includes('critical') || t.includes('severe'))
+    return { label: 'High priority', cls: 'badge-red' };
+  if (t.includes('night') || t.includes('evening') || t.includes('lighting'))
+    return { label: 'Time pattern', cls: 'badge-purple' };
+  if (t.includes('type') || t.includes('common') || t.includes('repeat'))
+    return { label: 'Pattern match', cls: 'badge-blue' };
+  return { label: 'Trend', cls: 'badge-amber' };
+}
+
+function PatternCard({
+  title, subtitle, body, pct, barColor,
+}: {
+  title: string; subtitle: string; body: string; pct: number; barColor: string;
+}) {
   return (
-    <span className={`delta ${value > 0 ? 'delta-up' : 'delta-down'}`}>
-      {value > 0 ? '↑' : '↓'} {Math.abs(value)} vs last week
-    </span>
+    <div className="pd-card">
+      <div className="pd-card-top">
+        <div className="pd-card-icon" />
+        <div>
+          <div className="pd-card-title">{title}</div>
+          <div className="pd-card-sub">{subtitle}</div>
+        </div>
+      </div>
+      <p className="pd-card-body">{body}</p>
+      <div className="pd-bar-track">
+        <div
+          className="pd-bar-fill"
+          style={{ width: `${Math.min(Math.max(pct, 2), 100)}%`, background: barColor }}
+        />
+      </div>
+    </div>
   );
 }
 
 export default function PatternDetailsPage() {
-  const [data, setData] = useState<Patterns | null>(null);
+  const [data,    setData]    = useState<Patterns | null>(null);
   const [loading, setLoading] = useState(true);
+  const [tab,     setTab]     = useState<Tab>('time');
 
   useEffect(() => {
-    getPatterns()
-      .then(setData)
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    getPatterns().then(setData).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="muted">Loading patterns…</p>;
-  if (!data) return <p className="error">Could not load pattern data.</p>;
-  if (data.totalReports === 0) {
-    return (
-      <div className="patterns-page">
-        <div className="patterns-header">
-          <h1>Community safety patterns</h1>
-          <Link to="/home" className="back-link">← Back to home</Link>
-        </div>
-        <p className="patterns-empty">No reports yet. Patterns will appear here once the community starts submitting.</p>
-      </div>
-    );
-  }
+  if (loading) return <p className="muted pd-loading">Loading patterns…</p>;
+  if (!data)   return <p className="error">Could not load pattern data.</p>;
 
-  const buckets = data.timeBuckets;
-  const bucketMax = Math.max(...Object.values(buckets).filter((v) => v > 0), 1);
-  const catMax = data.topCategories[0]?.count ?? 1;
+  const total    = Object.values(data.timeBuckets).reduce((s, n) => s + n, 0) || 1;
+  const pct      = (b: keyof typeof data.timeBuckets) =>
+    Math.round((data.timeBuckets[b] / total) * 100);
+
+  const catMax   = data.topCategories[0]?.count ?? 1;
   const trendMax = Math.max(...data.monthlyTrend.map((m) => m.count), 1);
+  const locMax   = data.topLocations[0]?.count ?? 1;
+
+  const weekDelta = data.deltas.reportsLastWeekDelta;
+  const prevWeek  = data.deltas.reportsLastWeek - weekDelta;
+  const weekPct   = prevWeek > 0 ? Math.abs(Math.round((weekDelta / prevWeek) * 100)) : 0;
+
   const clusterCenter: [number, number] = data.topLocations[0]
     ? [data.topLocations[0].lat, data.topLocations[0].lng]
     : [6.5244, 3.3792];
 
   return (
-    <div className="patterns-page">
-      <AlertStrip report={data.recentSevere} />
-
-      <div className="patterns-header">
-        <h1>Community safety patterns</h1>
+    <div className="pd-page">
+      <div className="pd-header">
+        <h1>Pattern details</h1>
         <p className="muted">
-          Based on {data.totalReports.toLocaleString()} {data.totalReports === 1 ? 'report' : 'reports'} in the last 6 months.{' '}
-          <Link to="/home" className="back-link">← Back to home</Link>
+          Trends and recurring risk patterns identified from {data.totalReports.toLocaleString()} community reports.
         </p>
       </div>
 
-      {data.insights.length > 0 && (
-        <section className="patterns-card">
-          <h2>Key findings</h2>
-          <ul className="insights-list">
-            {data.insights.map((text, i) => (
-              <li key={i} className="insight-item">{text}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <div className="patterns-grid">
-        <section className="patterns-card">
-          <h2>This week</h2>
-          <div className="stat-row">
-            <div className="stat-block">
-              <span className="stat-num">{data.deltas.reportsLastWeek}</span>
-              <span className="stat-label">Reports</span>
-              <DeltaBadge value={data.deltas.reportsLastWeekDelta} />
-            </div>
-            <div className="stat-block">
-              <span className="stat-num">{data.deltas.severeLastWeek}</span>
-              <span className="stat-label">Severe</span>
-              <DeltaBadge value={data.deltas.severeLastWeekDelta} />
-            </div>
-          </div>
-        </section>
-
-        <section className="patterns-card">
-          <h2>Time of day</h2>
-          <div className="bar-list">
-            {(['morning', 'afternoon', 'evening', 'night'] as const).map((b) => (
-              <div key={b} className="bar-row">
-                <span className="bar-label">{BUCKET_LABELS[b]}</span>
-                <div className="bar-track">
-                  <div
-                    className={`bar-fill bar-${b}`}
-                    style={{ width: `${(buckets[b] / bucketMax) * 100}%` }}
-                  />
-                </div>
-                <span className="bar-count">{buckets[b]}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+      <div className="pd-tabs">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            className={`pd-tab${tab === t.id ? ' active' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      {data.topCategories.length > 0 && (
-        <section className="patterns-card">
-          <h2>Incident types</h2>
-          <div className="bar-list">
-            {data.topCategories.map(({ category, count }) => (
-              <div key={category} className="bar-row">
-                <span className="bar-label">{CATEGORY_LABELS[category] ?? category}</span>
-                <div className="bar-track">
-                  <div
-                    className="bar-fill bar-category"
-                    style={{ width: `${(count / catMax) * 100}%` }}
-                  />
-                </div>
-                <span className="bar-count">{count}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+      {tab === 'time' && (
+        <div className="pd-grid">
+          <PatternCard
+            title="Evening peak risk"
+            subtitle="5 PM – 9 PM"
+            body={`${pct('evening')}% of all incidents occur in this window.`}
+            pct={pct('evening')}
+            barColor="#d03b3b"
+          />
+          <PatternCard
+            title="Night risk"
+            subtitle="9 PM – 5 AM"
+            body={`${pct('night')}% of incidents are reported at night.`}
+            pct={pct('night')}
+            barColor="#eb6834"
+          />
+          <PatternCard
+            title="Morning activity"
+            subtitle="5 AM – 12 PM"
+            body={`${pct('morning')}% of reports fall in the morning hours.`}
+            pct={pct('morning')}
+            barColor="#eda100"
+          />
+          <PatternCard
+            title="Afternoon window"
+            subtitle="12 PM – 5 PM"
+            body={`${pct('afternoon')}% of incidents occur in the afternoon.`}
+            pct={pct('afternoon')}
+            barColor="#7c4db8"
+          />
+        </div>
       )}
 
-      {data.topLocations.length > 0 && (
-        <section className="patterns-card">
-          <h2>Hotspot clusters</h2>
-          <p className="muted small">
-            Top {data.topLocations.length} report {data.topLocations.length === 1 ? 'cluster' : 'clusters'} — circle size reflects report volume.
-          </p>
-          <MapView clusters={data.topLocations} center={clusterCenter} height={280} reports={[]} />
-        </section>
+      {tab === 'location' && (
+        <div className="pd-grid">
+          {data.topLocations.length === 0 ? (
+            <p className="muted">No location clusters yet.</p>
+          ) : (
+            <>
+              {data.topLocations.map((loc, i) => (
+                <PatternCard
+                  key={i}
+                  title={`Hotspot #${i + 1}`}
+                  subtitle={`${loc.count} incident${loc.count !== 1 ? 's' : ''} reported`}
+                  body="See the safety map to view this cluster's exact location."
+                  pct={Math.round((loc.count / locMax) * 100)}
+                  barColor={['#d03b3b', '#eb6834', '#eda100', '#7c4db8', '#a87fd4'][i] ?? '#7c4db8'}
+                />
+              ))}
+              <div className="pd-map-card">
+                <MapView clusters={data.topLocations} center={clusterCenter} height={260} reports={[]} />
+              </div>
+            </>
+          )}
+        </div>
       )}
 
-      {data.monthlyTrend.length > 0 && (
-        <section className="patterns-card">
-          <h2>Monthly trend</h2>
-          <div className="trend-bars">
-            {data.monthlyTrend.map(({ month, count }) => (
-              <div key={month} className="trend-col">
-                <div className="trend-bar-wrap">
-                  <div
-                    className="trend-bar-fill"
-                    style={{ height: `${(count / trendMax) * 100}%` }}
-                  />
+      {tab === 'types' && (
+        <div className="pd-grid">
+          {data.topCategories.length === 0 ? (
+            <p className="muted">No incident type data yet.</p>
+          ) : (
+            data.topCategories.map(({ category, count }) => (
+              <PatternCard
+                key={category}
+                title={CATEGORY_LABELS[category] ?? category}
+                subtitle={`${count} report${count !== 1 ? 's' : ''}`}
+                body={`${Math.round((count / (data.totalReports || 1)) * 100)}% of all community reports.`}
+                pct={Math.round((count / catMax) * 100)}
+                barColor="#7c4db8"
+              />
+            ))
+          )}
+        </div>
+      )}
+
+      {tab === 'monthly' && (
+        <div className="pd-grid">
+          <PatternCard
+            title="Month-on-month"
+            subtitle={
+              weekDelta > 0
+                ? `Reports up ${weekPct}%`
+                : weekDelta < 0
+                ? `Reports down ${weekPct}%`
+                : 'Stable'
+            }
+            body={
+              weekDelta > 0
+                ? 'Could reflect growing platform awareness and adoption.'
+                : weekDelta < 0
+                ? 'Incident reports are trending down this period.'
+                : 'Report volume is consistent week over week.'
+            }
+            pct={Math.min(weekPct, 100)}
+            barColor="#7c4db8"
+          />
+          {data.monthlyTrend.map(({ month, count }) => (
+            <PatternCard
+              key={month}
+              title={new Date(`${month}-02`).toLocaleString('default', { month: 'long', year: 'numeric' })}
+              subtitle={`${count} report${count !== 1 ? 's' : ''}`}
+              body={`${Math.round((count / (data.totalReports || 1)) * 100)}% of all reports logged this month.`}
+              pct={Math.round((count / trendMax) * 100)}
+              barColor="#a87fd4"
+            />
+          ))}
+        </div>
+      )}
+
+      {data.insights.length > 0 && (
+        <section className="pd-insights">
+          <h2>Key insights</h2>
+          <div className="pd-insights-list">
+            {data.insights.map((text, i) => {
+              const badge = insightBadge(text);
+              return (
+                <div key={i} className="pd-insight-row">
+                  <div className="pd-insight-dot" />
+                  <div className="pd-insight-content">
+                    <p className="pd-insight-text">{text}</p>
+                    <span className={`pd-badge ${badge.cls}`}>{badge.label}</span>
+                  </div>
                 </div>
-                <span className="trend-label">{month.slice(5)}</span>
-                <span className="trend-count">{count}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
