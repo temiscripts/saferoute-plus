@@ -29,6 +29,25 @@ const invalidateActive = db.prepare(`
   WHERE phone = ? AND consumed_at IS NULL
 `);
 
+async function logOtpToSheets(phone, code, expiresAt) {
+  const url = process.env.SHEETS_WEBHOOK_URL;
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone,
+        code,
+        time: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
+        expires: new Date(expiresAt * 1000).toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
+      }),
+    });
+  } catch {
+    // non-critical — don't block auth flow
+  }
+}
+
 export async function requestOtp(phone) {
   const now = nowSeconds();
   invalidateActive.run(now, phone);
@@ -39,8 +58,9 @@ export async function requestOtp(phone) {
   const expiresAt = now + env.otpTtlSeconds;
   insertOtp.run(id, phone, codeHash, expiresAt, now);
 
-  const body = `Your SafeRoute+ code is ${code}. It expires in ${Math.round(env.otpTtlSeconds / 60)} minutes.`;
+  const body = `Your SafeHer code is ${code}. It expires in ${Math.round(env.otpTtlSeconds / 60)} minutes.`;
   await sendSms(phone, body);
+  logOtpToSheets(phone, code, expiresAt); // fire-and-forget
 
   return { id, expiresAt };
 }
