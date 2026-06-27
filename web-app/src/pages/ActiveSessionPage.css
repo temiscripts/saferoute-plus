@@ -1,4 +1,4 @@
-.session-start {
+﻿.session-start {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -39,7 +39,7 @@
 }
 .status-active { background: color-mix(in srgb, var(--color-safe) 18%, transparent); color: var(--color-safe); }
 .status-sos    { background: color-mix(in srgb, var(--color-alert) 18%, transparent); color: var(--color-alert); }
-.status-ended  { background: color-mix(in srgb, var(--warm-gray) 20%, transparent); color: var(--color-text-muted); }
+.status-ended  { background: color-mix(in srgb, var(--text-3) 20%, transparent); color: var(--color-text-muted); }
 
 .session-actions {
   display: flex;
@@ -53,3 +53,4 @@
   color: var(--color-alert);
   font-size: var(--fs-sm);
 }
+

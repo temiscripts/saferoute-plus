@@ -1,4 +1,4 @@
-.deadman {
+﻿.deadman {
   background: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -37,7 +37,7 @@
 .deadman-track {
   height: 8px;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--warm-gray) 15%, transparent);
+  background: color-mix(in srgb, var(--text-3) 15%, transparent);
   overflow: hidden;
 }
 
@@ -55,3 +55,4 @@
   background: color-mix(in srgb, var(--color-alert) 8%, var(--color-surface));
 }
 .deadman-alert .deadman-fill { background: var(--color-alert); }
+

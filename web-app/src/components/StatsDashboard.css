@@ -1,4 +1,4 @@
-.stats-grid {
+﻿.stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--space-4);
@@ -33,10 +33,10 @@
 }
 .delta-up   { color: var(--color-alert); background: color-mix(in srgb, var(--color-alert) 12%, transparent); }
 .delta-down { color: var(--color-resolved); background: color-mix(in srgb, var(--color-resolved) 14%, transparent); }
-.delta-flat { color: var(--color-text-muted); background: color-mix(in srgb, var(--warm-gray) 14%, transparent); }
+.delta-flat { color: var(--color-text-muted); background: color-mix(in srgb, var(--text-3) 14%, transparent); }
 
 .skeleton {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--warm-gray) 8%, var(--color-surface)) 0%, color-mix(in srgb, var(--warm-gray) 16%, var(--color-surface)) 50%, color-mix(in srgb, var(--warm-gray) 8%, var(--color-surface)) 100%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--text-3) 8%, var(--color-surface)) 0%, color-mix(in srgb, var(--text-3) 16%, var(--color-surface)) 50%, color-mix(in srgb, var(--text-3) 8%, var(--color-surface)) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }
@@ -45,3 +45,4 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
