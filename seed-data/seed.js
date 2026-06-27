@@ -28,7 +28,7 @@ const reports = JSON.parse(
 );
 
 const insertReport = db.prepare(`
-  INSERT OR IGNORE INTO reports (id, lat, lng, description, category, occurred_at, created_at)
+  INSERT OR REPLACE INTO reports (id, lat, lng, description, category, occurred_at, created_at)
   VALUES (@id, @lat, @lng, @description, @category, @occurred_at, @created_at)
 `);
 
@@ -38,7 +38,10 @@ const insertAll = db.transaction(() => {
   let inserted = 0;
   for (const r of reports) {
     const created_at = now - r.days_ago * 86400;
-    const occurred_at = created_at - (3600 - r.hour * 150);
+    // Compute local midnight of that day, then add the hour offset
+    const d = new Date((now - r.days_ago * 86400) * 1000);
+    d.setHours(0, 0, 0, 0);
+    const occurred_at = Math.floor(d.getTime() / 1000) + r.hour * 3600;
     const result = insertReport.run({
       id: r.id,
       lat: r.lat,

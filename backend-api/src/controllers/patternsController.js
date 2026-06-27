@@ -116,7 +116,7 @@ function insights(agg, d) {
     }
   }
   if (agg.topLocations[0] && agg.topLocations[0].count >= 3) {
-    out.push(`A single cluster near ${agg.topLocations[0].lat.toFixed(3)}, ${agg.topLocations[0].lng.toFixed(3)} has ${agg.topLocations[0].count} reports.`);
+    out.push(`The most active hotspot has ${agg.topLocations[0].count} reports — see the safety map for its exact location.`);
   }
   if (agg.topCategories[0]) {
     out.push(`Most common report type: "${agg.topCategories[0].category}" (${agg.topCategories[0].count}).`);
