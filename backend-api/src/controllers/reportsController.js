@@ -7,6 +7,7 @@ export const createReportSchema = z.object({
   lng: z.coerce.number().gte(-180).lte(180),
   description: z.string().min(1).max(2000),
   category: z.string().min(1).max(60).optional(),
+  severity: z.enum(['critical', 'high', 'moderate']).optional(),
   occurredAt: z.coerce.number().int().optional(),
 });
 
@@ -16,10 +17,10 @@ export const listReportsSchema = z.object({
 });
 
 const insertReport = db.prepare(
-  'INSERT INTO reports (id, lat, lng, description, category, occurred_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+  'INSERT INTO reports (id, lat, lng, description, category, severity, occurred_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 );
 const selectReports = db.prepare(
-  'SELECT id, lat, lng, description, category, occurred_at, created_at FROM reports WHERE created_at >= ? ORDER BY created_at DESC LIMIT ?',
+  'SELECT id, lat, lng, description, category, severity, occurred_at, created_at FROM reports WHERE created_at >= ? ORDER BY created_at DESC LIMIT ?',
 );
 
 export function postReport(req, res) {
@@ -31,6 +32,7 @@ export function postReport(req, res) {
     req.body.lng,
     req.body.description,
     req.body.category ?? null,
+    req.body.severity ?? null,
     req.body.occurredAt ?? null,
     now,
   );

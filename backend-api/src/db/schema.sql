@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS reports (
   lng REAL NOT NULL,
   description TEXT NOT NULL,
   category TEXT,
+  severity TEXT CHECK (severity IN ('critical', 'high', 'moderate')),
   occurred_at INTEGER,
   created_at INTEGER NOT NULL
 );

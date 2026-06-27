@@ -19,6 +19,7 @@ export function submitReport(input: {
   lng: number;
   description: string;
   category?: string;
+  severity?: 'critical' | 'high' | 'moderate';
   occurredAt?: number;
 }) {
   return api<{ id: string; createdAt: number }>('POST', '/reports', { auth: false, body: input });

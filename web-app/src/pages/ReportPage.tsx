@@ -22,6 +22,7 @@ export default function ReportPage() {
   const [lng, setLng] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('harassment');
+  const [severity, setSeverity] = useState<'critical' | 'high' | 'moderate'>('moderate');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -42,6 +43,7 @@ export default function ReportPage() {
         lng: Number(lng),
         description,
         category,
+        severity,
       });
       setDone(true);
     } catch (err) {
@@ -121,6 +123,22 @@ export default function ReportPage() {
             ))}
           </select>
         </label>
+
+        <div className="field">
+          <span className="field-label">Severity level</span>
+          <div className="sev-chips">
+            {(['critical', 'high', 'moderate'] as const).map((s) => (
+              <button
+                key={s}
+                type="button"
+                className={`sev-chip sev-${s}${severity === s ? ' sev-selected' : ''}`}
+                onClick={() => setSeverity(s)}
+              >
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <label className="field">
           <span className="field-label">What happened?</span>
