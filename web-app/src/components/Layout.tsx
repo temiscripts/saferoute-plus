@@ -20,6 +20,9 @@ export default function Layout() {
           <NavLink to="/report"    className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Report incident</NavLink>
           <NavLink to="/dashboard" className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Dashboard</NavLink>
           <NavLink to="/patterns"  className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Patterns</NavLink>
+          {user && (
+            <NavLink to="/contacts" className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Contacts</NavLink>
+          )}
         </nav>
 
         <div className="topbar-actions">

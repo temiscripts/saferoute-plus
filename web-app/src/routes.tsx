@@ -10,6 +10,7 @@ import PatternDetailsPage from './pages/PatternDetailsPage';
 import SafetyMapPage from './pages/SafetyMapPage';
 import DashboardPage from './pages/DashboardPage';
 import AckPage from './pages/AckPage';
+import ContactsPage from './pages/ContactsPage';
 
 export default function AppRoutes() {
   return (
@@ -24,6 +25,7 @@ export default function AppRoutes() {
         <Route path="/patterns"       element={<PatternDetailsPage />} />
         <Route path="/session/active" element={<RequireAuth><ActiveSessionPage /></RequireAuth>} />
         <Route path="/post-incident"  element={<RequireAuth><PostIncidentPage /></RequireAuth>} />
+        <Route path="/contacts"       element={<RequireAuth><ContactsPage /></RequireAuth>} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
       <Route path="/ack/:token" element={<AckPage />} />
