@@ -11,7 +11,7 @@ const path = require('path');
 const fs = require('fs');
 
 const DB_PATH = process.env.DATABASE_PATH
-  || path.join(__dirname, '../backend-api/data/saferoute.db');
+  || path.join(__dirname, '../backend-api/data/saferoute.sqlite');
 
 if (!fs.existsSync(DB_PATH)) {
   console.error(`Database not found at ${DB_PATH}`);

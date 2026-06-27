@@ -4,6 +4,20 @@ import { getPatterns, type Patterns } from '../api/patterns';
 import MapView from '../components/MapView';
 import './SafetyMapPage.css';
 
+async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+      { headers: { 'Accept-Language': 'en' } },
+    );
+    const data = await res.json();
+    const a = data.address ?? {};
+    return a.neighbourhood || a.suburb || a.city_district || a.town || 'Lagos';
+  } catch {
+    return 'Lagos';
+  }
+}
+
 const FILTERS = ['All', 'Harassment', 'Assault', 'Stalking', 'Unsafe area'];
 
 function riskLevel(count: number): 'critical' | 'high' | 'moderate' | 'low' {
@@ -21,13 +35,18 @@ const RISK_LABELS: Record<string, string> = {
 };
 
 export default function SafetyMapPage() {
-  const [reports,  setReports]  = useState<Report[]>([]);
-  const [patterns, setPatterns] = useState<Patterns | null>(null);
-  const [filter,   setFilter]   = useState('All');
+  const [reports,      setReports]      = useState<Report[]>([]);
+  const [patterns,     setPatterns]     = useState<Patterns | null>(null);
+  const [filter,       setFilter]       = useState('All');
+  const [clusterName,  setClusterName]  = useState<string | null>(null);
 
   useEffect(() => {
     listReports().then((r) => setReports(r.reports)).catch(() => {});
-    getPatterns().then(setPatterns).catch(() => {});
+    getPatterns().then((p) => {
+      setPatterns(p);
+      const top = p?.topLocations?.[0];
+      if (top) reverseGeocode(top.lat, top.lng).then(setClusterName);
+    }).catch(() => {});
   }, []);
 
   const filtered = filter === 'All'
@@ -60,7 +79,8 @@ export default function SafetyMapPage() {
         <div className={`map-alert map-alert-${topRisk}`}>
           <span className="map-alert-dot" />
           <div>
-            <strong>{RISK_LABELS[topRisk]}:</strong> cluster near {topCluster.lat.toFixed(3)}, {topCluster.lng.toFixed(3)} — {topCluster.count} reports.
+            <strong>{RISK_LABELS[topRisk]}:</strong>{' '}
+            {clusterName ?? 'Lagos area'} — {topCluster.count} incident{topCluster.count !== 1 ? 's' : ''} reported.
             {topRisk === 'critical' && ' Exercise extreme caution or avoid this area.'}
           </div>
         </div>
