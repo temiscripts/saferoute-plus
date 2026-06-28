@@ -14,7 +14,8 @@
   border-bottom: 0.5px solid var(--color-border-strong);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -34,7 +35,8 @@
   border-radius: 6px;
 }
 
-.topbar-nav {
+/* ── Desktop nav ──────────────────────────────────────── */
+.desktop-nav {
   display: flex;
   gap: var(--space-1);
   flex: 1;
@@ -46,16 +48,19 @@
   border-radius: var(--radius-sm);
   font-size: var(--fs-sm);
   color: var(--text-2);
+  white-space: nowrap;
   transition: background var(--motion-quick), color var(--motion-quick);
 }
-.nav-link:hover { background: var(--lav-50); color: var(--lav-700); }
+.nav-link:hover  { background: var(--lav-50);  color: var(--lav-700); }
 .nav-link.active { background: var(--lav-100); color: var(--lav-700); font-weight: 500; }
 
+/* ── Topbar actions ───────────────────────────────────── */
 .topbar-actions {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .user-tag {
@@ -82,6 +87,45 @@
 }
 .sos-btn:hover { filter: brightness(1.1); }
 
+/* ── Hamburger (mobile only) ──────────────────────────── */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--lav-700);
+  line-height: 1;
+}
+
+/* ── Mobile dropdown nav ──────────────────────────────── */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  background: var(--white);
+  border-top: 0.5px solid var(--color-border-strong);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  gap: var(--space-1);
+  order: 99;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.mobile-nav .nav-link {
+  font-size: var(--fs-md);
+  padding: 10px 12px;
+  display: block;
+}
+
+.mobile-nav-foot {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 0.5px solid var(--color-border-strong);
+}
+
+/* ── Main content ─────────────────────────────────────── */
 .app-main {
   flex: 1;
   max-width: 1100px;
@@ -90,8 +134,20 @@
   padding: var(--space-6);
 }
 
+/* ── Mobile breakpoint ────────────────────────────────── */
 @media (max-width: 768px) {
-  .topbar-nav { gap: 0; }
-  .nav-link { padding: 6px 8px; font-size: var(--fs-xs); }
-  .user-tag { display: none; }
+  .app-topbar {
+    padding: 0 var(--space-4);
+    height: auto;
+    min-height: 52px;
+  }
+
+  .desktop-nav { display: none; }
+  .hamburger   { display: block; }
+  .user-tag    { display: none; }
+
+  /* Show mobile nav when it's rendered into DOM */
+  .mobile-nav  { display: flex; }
+
+  .app-main { padding: var(--space-4); }
 }
