@@ -12,6 +12,7 @@ import {
   type SessionStatus,
 } from '../api/sessions';
 import { classifyVoice, classifyMotion } from '../api/ml';
+import { blobToWav } from '../utils/toWav';
 import './ActiveSessionPage.css';
 
 const AUTO_INTERVAL = Number(import.meta.env.VITE_CHECKIN_AUTO_INTERVAL_SECONDS ?? 60);
@@ -77,7 +78,9 @@ export default function ActiveSessionPage() {
           currentRecorder.onstop = async () => {
             if (stopped) return;
             try {
-              const blob = new Blob(chunks, { type: 'audio/wav' });
+              const mimeType = currentRecorder?.mimeType ?? 'audio/webm';
+              const raw = new Blob(chunks, { type: mimeType });
+              const blob = await blobToWav(raw);
               const result = await classifyVoice(blob);
               if (result.label === 'distress' && result.confidence >= 0.65) {
                 setMlAlert({ type: 'voice', message: `Voice distress detected (${Math.round(result.confidence * 100)}% confidence). Are you OK?` });
