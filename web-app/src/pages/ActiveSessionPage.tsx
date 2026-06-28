@@ -11,6 +11,7 @@ import {
   endSession,
   type SessionStatus,
 } from '../api/sessions';
+import { classifyVoice, classifyMotion } from '../api/ml';
 import './ActiveSessionPage.css';
 
 const AUTO_INTERVAL = Number(import.meta.env.VITE_CHECKIN_AUTO_INTERVAL_SECONDS ?? 60);
@@ -23,7 +24,11 @@ export default function ActiveSessionPage() {
   const [lastCheckinMs, setLastCheckinMs] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [mlAlert, setMlAlert] = useState<{ type: 'voice' | 'motion'; message: string } | null>(null);
   const autoTimerRef = useRef<number | null>(null);
+  const voiceTimerRef = useRef<number | null>(null);
+  const motionTimerRef = useRef<number | null>(null);
+  const motionSamplesRef = useRef<[number, number, number][]>([]);
 
   const { coords, error: geoError } = useGeolocation(sessionId !== null && status === 'active');
   const deadlineMs = lastCheckinMs ? lastCheckinMs + THRESHOLD * 1000 : null;
@@ -49,6 +54,90 @@ export default function ActiveSessionPage() {
       if (autoTimerRef.current) window.clearInterval(autoTimerRef.current);
     };
   }, [sessionId, status, doCheckin]);
+
+  // Voice distress monitoring — records 10s audio clips and sends to ML service
+  useEffect(() => {
+    if (!sessionId || status !== 'active') return;
+    if (!navigator.mediaDevices?.getUserMedia) return;
+
+    let stopped = false;
+    let stream: MediaStream | null = null;
+    let currentRecorder: MediaRecorder | null = null;
+
+    async function startVoice() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (stopped) { stream.getTracks().forEach((t) => t.stop()); return; }
+
+        function recordClip() {
+          if (stopped || !stream) return;
+          const chunks: Blob[] = [];
+          currentRecorder = new MediaRecorder(stream);
+          currentRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+          currentRecorder.onstop = async () => {
+            if (stopped) return;
+            try {
+              const blob = new Blob(chunks, { type: 'audio/wav' });
+              const result = await classifyVoice(blob);
+              if (result.label === 'distress' && result.confidence >= 0.65) {
+                setMlAlert({ type: 'voice', message: `Voice distress detected (${Math.round(result.confidence * 100)}% confidence). Are you OK?` });
+              }
+            } catch { /* ML service unavailable — silently skip */ }
+            voiceTimerRef.current = window.setTimeout(recordClip, 2000);
+          };
+          currentRecorder.start();
+          window.setTimeout(() => { if (currentRecorder?.state === 'recording') currentRecorder.stop(); }, 10_000);
+        }
+        recordClip();
+      } catch { /* mic denied — skip silently */ }
+    }
+    startVoice();
+
+    return () => {
+      stopped = true;
+      if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
+      if (currentRecorder?.state === 'recording') currentRecorder.stop();
+      stream?.getTracks().forEach((t) => t.stop());
+    };
+  }, [sessionId, status]);
+
+  // Motion anomaly monitoring — batches DeviceMotion samples and sends to ML service
+  useEffect(() => {
+    if (!sessionId || status !== 'active') return;
+    if (typeof DeviceMotionEvent === 'undefined') return;
+
+    let stopped = false;
+
+    function onMotion(e: DeviceMotionEvent) {
+      const acc = e.acceleration ?? e.accelerationIncludingGravity;
+      if (acc?.x != null && acc.y != null && acc.z != null) {
+        motionSamplesRef.current.push([acc.x, acc.y, acc.z]);
+      }
+    }
+
+    async function analyzeMotion() {
+      if (stopped) return;
+      const batch = motionSamplesRef.current.splice(0);
+      if (batch.length >= 10) {
+        try {
+          const result = await classifyMotion(batch);
+          if (result.label === 'anomaly' && result.confidence >= 0.65) {
+            setMlAlert({ type: 'motion', message: 'Unusual movement detected. Are you OK?' });
+          }
+        } catch { /* ML service unavailable — skip */ }
+      }
+      if (!stopped) motionTimerRef.current = window.setTimeout(analyzeMotion, 5_000);
+    }
+
+    window.addEventListener('devicemotion', onMotion as EventListener);
+    motionTimerRef.current = window.setTimeout(analyzeMotion, 5_000);
+
+    return () => {
+      stopped = true;
+      window.removeEventListener('devicemotion', onMotion as EventListener);
+      if (motionTimerRef.current) clearTimeout(motionTimerRef.current);
+    };
+  }, [sessionId, status]);
 
   async function onStart() {
     setError(null);
@@ -132,6 +221,14 @@ export default function ActiveSessionPage() {
           <div><dt>Auto check-in</dt><dd>every {AUTO_INTERVAL}s</dd></div>
         </dl>
       </div>
+
+      {mlAlert && (
+        <div className={`ml-alert ml-alert-${mlAlert.type}`}>
+          <span className="ml-alert-icon">{mlAlert.type === 'voice' ? '🎤' : '📡'}</span>
+          <span className="ml-alert-msg">{mlAlert.message}</span>
+          <button className="ml-alert-dismiss" onClick={() => setMlAlert(null)}>Dismiss</button>
+        </div>
+      )}
 
       {error && <p className="error">{error}</p>}
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getPatterns, type Patterns } from '../api/patterns';
+import { fetchClusters, type Cluster } from '../api/ml';
 import MapView from '../components/MapView';
 import './PatternDetailsPage.css';
 
@@ -60,13 +61,23 @@ function PatternCard({
   );
 }
 
+const RISK_COLORS: Record<string, string> = {
+  critical: '#d03b3b',
+  high:     '#eb6834',
+  moderate: '#eda100',
+  low:      '#7c4db8',
+};
+
 export default function PatternDetailsPage() {
-  const [data,    setData]    = useState<Patterns | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [tab,     setTab]     = useState<Tab>('time');
+  const [data,         setData]         = useState<Patterns | null>(null);
+  const [loading,      setLoading]      = useState(true);
+  const [clusters,     setClusters]     = useState<Cluster[]>([]);
+  const [clusterTotal, setClusterTotal] = useState(0);
+  const [tab,          setTab]          = useState<Tab>('time');
 
   useEffect(() => {
     getPatterns().then(setData).catch(() => {}).finally(() => setLoading(false));
+    fetchClusters().then((r) => { setClusters(r.clusters); setClusterTotal(r.total_reports); }).catch(() => {});
   }, []);
 
   if (loading) return <p className="muted pd-loading">Loading patterns…</p>;
@@ -144,7 +155,31 @@ export default function PatternDetailsPage() {
 
       {tab === 'location' && (
         <div className="pd-grid">
-          {data.topLocations.length === 0 ? (
+          {clusters.length > 0 ? (
+            <>
+              <p className="pd-cluster-note muted">
+                ML-identified clusters from {clusterTotal} reports — grouped by location, description and time.
+              </p>
+              {clusters.map((c) => (
+                <PatternCard
+                  key={c.cluster_id}
+                  title={`${c.risk_level.charAt(0).toUpperCase() + c.risk_level.slice(1)} risk cluster`}
+                  subtitle={`${c.count} report${c.count !== 1 ? 's' : ''} · ${c.dominant_time} · ${c.top_category}`}
+                  body={`Risk score ${c.risk_score.toFixed(1)} · centred near ${c.centroid_lat.toFixed(3)}, ${c.centroid_lng.toFixed(3)}`}
+                  pct={Math.round(c.risk_score / 3 * 100)}
+                  barColor={RISK_COLORS[c.risk_level] ?? '#7c4db8'}
+                />
+              ))}
+              <div className="pd-map-card">
+                <MapView
+                  clusters={clusters.map((c) => ({ lat: c.centroid_lat, lng: c.centroid_lng, count: c.count }))}
+                  center={[clusters[0].centroid_lat, clusters[0].centroid_lng]}
+                  height={260}
+                  reports={[]}
+                />
+              </div>
+            </>
+          ) : data.topLocations.length === 0 ? (
             <p className="muted">No location clusters yet.</p>
           ) : (
             <>

@@ -112,6 +112,12 @@
   transition: width 0.4s ease;
 }
 
+.pd-cluster-note {
+  grid-column: 1 / -1;
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+
 /* map card spans full width */
 .pd-map-card {
   grid-column: 1 / -1;
