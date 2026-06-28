@@ -13,6 +13,7 @@ import { patternsRouter } from './routes/patterns.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { startEscalationEngine } from '../../escalation-engine/src/index.js';
 import { setEscalationEngine } from './services/escalationGateway.js';
+import { seedIfEmpty } from './db/autoSeed.js';
 
 const app = express();
 
@@ -45,6 +46,8 @@ app.use('/escalation', escalationRouter);
 
 app.use(notFound);
 app.use(errorHandler);
+
+seedIfEmpty();
 
 const server = app.listen(env.port, () => {
   console.log(`saferoute backend-api listening on :${env.port} [${env.nodeEnv}]`);
