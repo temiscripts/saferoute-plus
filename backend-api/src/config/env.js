@@ -67,4 +67,8 @@ export const env = {
   ackLinkBaseUrl: process.env.ACK_LINK_BASE_URL ?? 'http://localhost:5173/ack',
 
   corsOrigin: process.env.CORS_ORIGIN ?? '*',
+
+  mlVoiceUrl:      process.env.ML_VOICE_URL      ?? '',
+  mlMotionUrl:     process.env.ML_MOTION_URL     ?? '',
+  mlClusteringUrl: process.env.ML_CLUSTERING_URL ?? '',
 };

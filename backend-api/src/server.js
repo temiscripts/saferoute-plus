@@ -10,6 +10,7 @@ import { sessionsRouter } from './routes/sessions.js';
 import { routesRouter } from './routes/routes.js';
 import { checkinsRouter } from './routes/checkins.js';
 import { patternsRouter } from './routes/patterns.js';
+import { mlRouter } from './routes/ml.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { startEscalationEngine } from '../../escalation-engine/src/index.js';
 import { setEscalationEngine } from './services/escalationGateway.js';
@@ -43,6 +44,7 @@ app.use('/routes', routesRouter);
 app.use('/checkins', checkinsRouter);
 app.use('/patterns', patternsRouter);
 app.use('/escalation', escalationRouter);
+app.use('/ml', mlRouter);
 
 app.use(notFound);
 app.use(errorHandler);

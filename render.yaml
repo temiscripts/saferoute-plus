@@ -38,3 +38,9 @@ services:
         value: https://saferoute-plus.netlify.app/ack
       - key: CORS_ORIGIN
         value: https://saferoute-plus.netlify.app
+      - key: ML_VOICE_URL
+        value: ""
+      - key: ML_MOTION_URL
+        value: ""
+      - key: ML_CLUSTERING_URL
+        value: ""
