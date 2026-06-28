@@ -79,9 +79,12 @@ function sendViaConsole(to, body) {
 
 async function logToSheets(to, message, type) {
   const url = process.env.SHEETS_WEBHOOK_URL;
-  if (!url) return;
+  if (!url) {
+    console.warn('[sheets] SHEETS_WEBHOOK_URL not set — skipping log');
+    return;
+  }
   try {
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -90,8 +93,17 @@ async function logToSheets(to, message, type) {
         message,
         time: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
       }),
+      redirect: 'follow',
     });
-  } catch { /* non-critical */ }
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      console.error(`[sheets] webhook returned ${res.status}: ${text.slice(0, 200)}`);
+    } else {
+      console.log(`[sheets] logged ${type} for ${to}`);
+    }
+  } catch (err) {
+    console.error('[sheets] fetch failed:', err.message);
+  }
 }
 
 export async function sendSms(to, body, type = 'SMS') {
