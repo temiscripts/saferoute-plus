@@ -120,7 +120,7 @@ export function createEngine({ db, sendSms, config, logger }) {
     const body = `SafeRoute+ ALERT: ${who} ${reasonText} (${locStr}). Tap to acknowledge & see live location: ${ackUrl}`;
 
     try {
-      await sendSms(contact.phone, body);
+      await sendSms(contact.phone, body, 'SOS ALERT');
       logger.log(`[escalation] tier-${contact.tier} notified: ${contact.name} (${contact.phone})`);
     } catch (err) {
       logger.error(`[escalation] SMS failed for ${contact.phone}:`, err.message);

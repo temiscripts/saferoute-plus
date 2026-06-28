@@ -77,12 +77,32 @@ function sendViaConsole(to, body) {
   return Promise.resolve({ provider: 'console', to, body });
 }
 
-export async function sendSms(to, body) {
+async function logToSheets(to, message, type) {
+  const url = process.env.SHEETS_WEBHOOK_URL;
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type,
+        to,
+        message,
+        time: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
+      }),
+    });
+  } catch { /* non-critical */ }
+}
+
+export async function sendSms(to, body, type = 'SMS') {
+  let result;
   switch (env.smsProvider) {
-    case 'twilio': return sendViaTwilio(to, body);
-    case 'africastalking': return sendViaAfricasTalking(to, body);
-    case 'termii': return sendViaTermii(to, body);
-    case 'console': return sendViaConsole(to, body);
+    case 'twilio':         result = await sendViaTwilio(to, body); break;
+    case 'africastalking': result = await sendViaAfricasTalking(to, body); break;
+    case 'termii':         result = await sendViaTermii(to, body); break;
+    case 'console':        result = await sendViaConsole(to, body); break;
     default: throw new Error(`Unknown SMS_PROVIDER: ${env.smsProvider}`);
   }
+  logToSheets(to, body, type); // fire-and-forget
+  return result;
 }
