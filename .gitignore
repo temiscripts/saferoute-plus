@@ -29,7 +29,7 @@ env/
 .pytest_cache/
 .ipynb_checkpoints/
 
-# ML model artifacts
+# ML model artifacts — ignore by default but allow trained models in models/ subdirs
 *.pkl
 *.joblib
 *.h5
@@ -38,6 +38,10 @@ env/
 *.onnx
 *.tflite
 *.ckpt
+!voice-distress-model/models/*.joblib
+!motion-anomaly-model/models/*.joblib
+!voice-distress-model/models/*.json
+!motion-anomaly-model/models/*.json
 
 # Raw datasets (do not commit)
 voice-distress-model/data/
