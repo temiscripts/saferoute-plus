@@ -8,6 +8,11 @@ Submission deadline: 28 June 2026 · Demo Day: 30 June 2026
 🌐 **Live app:** https://saferoute-plus.netlify.app
 🔧 **API:** https://saferoute-plus.onrender.com
 
+> **For judges / testers — getting your OTP:**
+> The app uses phone OTP login. Because we are in demo mode (no real SMS provider), OTP codes are **not sent by text**. Instead, every OTP and every SOS alert is logged in real time to a shared Google Sheet:
+> 📊 **OTP & alert log:** *(Google Sheets link — ask the team)*
+> Find your phone number in the **To** column and use the code in the **Message** column.
+
 ---
 
 ## What it does
