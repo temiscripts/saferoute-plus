@@ -1,0 +1,10 @@
+{
+  "window_size": 128,
+  "step_size": 64,
+  "label_map": {
+    "0": "normal",
+    "1": "anomaly"
+  },
+  "training_data": "fully synthetic (normal + falls)",
+  "note": "Synthetic falls are physics-based. Swap in MobiAct for real-world accuracy (see README)."
+}
