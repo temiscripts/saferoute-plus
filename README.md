@@ -5,6 +5,9 @@
 Built for the **HER Hackathon** by NITHUB, University of Lagos — Track: Women's Safety & Health.
 Submission deadline: 28 June 2026 · Demo Day: 30 June 2026
 
+🌐 **Live app:** https://saferoute-plus.netlify.app
+🔧 **API:** https://saferoute-plus.onrender.com
+
 ---
 
 ## What it does
