@@ -27,14 +27,11 @@
   flex-shrink: 0;
 }
 
-.brand-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: var(--lav-600);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.brand-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
 .topbar-nav {

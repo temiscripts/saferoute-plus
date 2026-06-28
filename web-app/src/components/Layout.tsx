@@ -10,7 +10,7 @@ export default function Layout() {
     <div className="app-shell">
       <header className="app-topbar">
         <NavLink to="/home" className="brand">
-          <span className="brand-mark" aria-hidden="true" />
+          <img src="/SAFEROUTE PLUS_FF.png" alt="" className="brand-logo" aria-hidden="true" />
           <span className="brand-text">SafeRoute Plus</span>
         </NavLink>
 
