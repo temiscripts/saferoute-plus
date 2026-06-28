@@ -1,4 +1,10 @@
 import { env } from '../config/env.js';
+import { db } from '../db/sqlite.js';
+import { nowSeconds } from '../utils/ids.js';
+
+const selectReportsForClustering = db.prepare(
+  'SELECT id, lat, lng, description, category, severity, occurred_at, created_at FROM reports WHERE created_at >= ? ORDER BY created_at DESC LIMIT 500',
+);
 
 async function proxyJson(url, init) {
   const res = await fetch(url, { ...init, signal: AbortSignal.timeout(15_000) });
@@ -38,13 +44,28 @@ export async function predictMotion(req, res, next) {
 export async function getClusters(req, res, next) {
   try {
     if (!env.mlClusteringUrl) return res.status(503).json({ error: 'Clustering ML service not configured' });
-    const backendUrl = process.env.SELF_URL ?? `http://localhost:${env.port}`;
+
     const eps         = req.query.eps         ?? '0.40';
     const minSamples  = req.query.min_samples ?? '2';
 
-    const result = await proxyJson(
-      `${env.mlClusteringUrl}/clusters?api=${encodeURIComponent(backendUrl)}&eps=${eps}&min_samples=${minSamples}`,
-    );
+    // Fetch reports directly from the local DB — avoids cross-container HTTP calls
+    const cutoff  = nowSeconds() - 180 * 86400; // last 6 months
+    const reports = selectReportsForClustering.all(cutoff).map((r) => ({
+      id:          r.id,
+      lat:         r.lat,
+      lng:         r.lng,
+      description: r.description,
+      category:    r.category ?? 'other',
+      severity:    r.severity ?? null,
+      occurred_at: r.occurred_at ?? r.created_at,
+      created_at:  r.created_at,
+    }));
+
+    const result = await proxyJson(`${env.mlClusteringUrl}/clusters`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ reports, eps: parseFloat(eps), min_samples: parseInt(minSamples) }),
+    });
     res.json(result);
   } catch (err) { next(err); }
 }
