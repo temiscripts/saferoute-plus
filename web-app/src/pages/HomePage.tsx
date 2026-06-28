@@ -84,7 +84,7 @@ export default function HomePage() {
 
       {/* Features */}
       <section className="home-features">
-        <h3>What SafeHer does</h3>
+        <h3>What SafeRoute Plus does</h3>
         <div className="feature-grid">
           {FEATURES.map((f) => (
             <div key={f.title} className="fcard">

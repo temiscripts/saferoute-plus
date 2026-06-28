@@ -11,7 +11,7 @@ export default function Layout() {
       <header className="app-topbar">
         <NavLink to="/home" className="brand">
           <span className="brand-mark" aria-hidden="true" />
-          <span className="brand-text">SafeHer</span>
+          <span className="brand-text">SafeRoute Plus</span>
         </NavLink>
 
         <nav className="topbar-nav">
