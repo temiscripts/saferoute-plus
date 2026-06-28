@@ -1,7 +1,0 @@
-.map-view {
-  width: 100%;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-1);
-}
-.map-canvas { height: 100%; width: 100%; }
