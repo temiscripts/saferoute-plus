@@ -170,7 +170,7 @@ OTPs print to the backend terminal (SMS_PROVIDER=console) **and** appear in the 
 
 | Name | Role |
 |---|---|
-| [temiscripts](https://github.com/temiscripts) | Project lead — backend, frontend, escalation engine, seed data |
+| [temiscripts](https://github.com/temiscripts) | Backend, frontend, escalation engine, seed data |
 | Onose Braimah(https://github.com/Ono-se) | ML — voice distress model, motion anomaly model |
 | Chinonye Ibeakanma | ML — report clustering |
 | Olamide Ade-Olunusi | UI/UX design |
