@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: safeher-api
+    runtime: node
+    rootDir: backend-api
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SMS_PROVIDER
+        value: console
+      - key: MAPS_PROVIDER
+        value: osrm
+      - key: DATABASE_PATH
+        value: ./data/saferoute.sqlite
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: OTP_LENGTH
+        value: "6"
+      - key: OTP_TTL_SECONDS
+        value: "300"
+      - key: OTP_MAX_ATTEMPTS
+        value: "5"
+      - key: ESCALATION_ACK_WINDOW_SECONDS
+        value: "30"
+      - key: DEADMAN_CHECKIN_INTERVAL_SECONDS
+        value: "120"
+      - key: DEADMAN_TICK_INTERVAL_SECONDS
+        value: "10"
+      - key: SHEETS_WEBHOOK_URL
+        value: https://script.google.com/macros/s/AKfycbwnhKDxeE1OL_Hn941SAgw8cQ2hNN3MngCI_z2ge0JGZNhAGHs2DUDY39WUCPvzEwsL/exec
+      # Set these after Netlify is deployed:
+      # ACK_LINK_BASE_URL = https://<your-netlify-url>/ack
+      # CORS_ORIGIN       = https://<your-netlify-url>

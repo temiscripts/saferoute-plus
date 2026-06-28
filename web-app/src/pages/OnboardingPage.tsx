@@ -52,7 +52,7 @@ export default function OnboardingPage() {
   return (
     <main className="onboarding">
       <div className="onboarding-card surface">
-        <h1>SafeRoute+</h1>
+        <h1>SafeRoute Plus</h1>
         <p className="muted">Quiet vigilance. Always on your side.</p>
 
         {step === 'phone' ? (
