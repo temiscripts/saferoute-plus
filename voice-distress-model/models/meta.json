@@ -1,0 +1,19 @@
+{
+  "n_mfcc": 40,
+  "hop_length": 512,
+  "n_fft": 1024,
+  "sample_rate": 22050,
+  "distress_emotions": [
+    "angry",
+    "fearful"
+  ],
+  "calm_emotions": [
+    "neutral",
+    "calm"
+  ],
+  "label_map": {
+    "0": "calm",
+    "1": "distress"
+  },
+  "dataset": "xbgoose/ravdess"
+}
