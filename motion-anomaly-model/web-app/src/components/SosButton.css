@@ -1,0 +1,62 @@
+.sos-button {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+.sos-core {
+  position: relative;
+  z-index: 2;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--offwhite);
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-2);
+  transition: background var(--motion-base) var(--easing),
+              transform var(--motion-base) var(--easing);
+}
+
+.sos-pulse {
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background: var(--color-safe);
+  opacity: 0;
+  z-index: 1;
+  animation: sos-breath var(--motion-pulse) ease-in-out infinite;
+}
+.sos-pulse-delayed { animation-delay: calc(var(--motion-pulse) / 2); }
+
+@keyframes sos-breath {
+  0%   { transform: scale(0.92); opacity: 0; }
+  40%  { opacity: 0.35; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+
+.sos-active .sos-core { background: var(--color-resolved); }
+.sos-active .sos-pulse { background: var(--color-resolved); animation-duration: 2s; }
+
+.sos-alert .sos-core {
+  background: var(--color-alert);
+  transform: scale(1.04);
+}
+.sos-alert .sos-pulse {
+  background: var(--color-alert);
+  animation-duration: var(--motion-pulse-alert);
+}
+.sos-alert .sos-pulse-delayed { animation-delay: calc(var(--motion-pulse-alert) / 2); }
+
+.sos-button:hover .sos-core { filter: brightness(1.08); }
+.sos-button:active .sos-core { transform: scale(0.97); }
+.sos-button:disabled { opacity: 0.6; cursor: not-allowed; }
